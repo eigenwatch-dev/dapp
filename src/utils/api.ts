@@ -1,8 +1,8 @@
 "use server";
 import axios from "axios";
 
-const BASE_URL = process.env.BASE_URL;
-const API_KEY = process.env.API_KEY;
+const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:8000";
+const API_KEY = process.env.API_KEY || "apikey";
 
 const api = axios.create({
   baseURL: BASE_URL,

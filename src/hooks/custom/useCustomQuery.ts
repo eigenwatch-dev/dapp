@@ -35,7 +35,7 @@ export default function useCustomQuery<TData = any, TParams = any>({
     },
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     enabled,
-    select: (data: any) => data?.data,
+    select: (data: any) => data,
     refetchOnWindowFocus: false, // Prevent unnecessary refetches
     staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
   } satisfies UseQueryOptions);
