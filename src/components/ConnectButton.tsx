@@ -2,9 +2,9 @@ import { Wallet } from "lucide-react";
 
 export function ConnectButton() {
   return (
-    <button className="bg-[#155DFC] rounded-[10px] flex gap-[8px] px-[20px] py-[8px]">
-      <Wallet size={18} className="my-auto" />
-      <span className="text-[16px]">Connect Wallet</span>
+    <button className="bg-[#155DFC] hover:bg-[#155DFC]/70 rounded-[10px] flex gap-[6px] px-[18px] py-[8px]">
+      <Wallet size={16} className="my-auto" />
+      <span className="text-[14px]">Connect Wallet</span>
     </button>
   );
 }

@@ -10,7 +10,6 @@ type UseTableTabsProps = {
   paginationProps: ReusableTableProps["paginationProps"];
   tableFilters: ReusableTableProps["tableFilters"];
   enableMultiSelect: ReusableTableProps["enableMultiSelect"];
-  drawerContent: ReusableTableProps["drawerContent"];
   onRowClick: ReusableTableProps["onRowClick"];
   rawData: ReusableTableProps["rawData"];
   altTabs: ReusableTableProps["altTabs"];
@@ -29,7 +28,6 @@ export const useTableTabs = ({
   paginationProps,
   tableFilters,
   enableMultiSelect,
-  drawerContent,
   onRowClick,
   rawData,
   altTabs = [],
@@ -46,7 +44,6 @@ export const useTableTabs = ({
         paginationProps,
         tableFilters,
         enableMultiSelect,
-        drawerContent,
         onRowClick,
         rawData,
       },
@@ -61,7 +58,6 @@ export const useTableTabs = ({
       paginationProps,
       tableFilters,
       enableMultiSelect,
-      drawerContent,
       onRowClick,
       rawData,
       altTabs,

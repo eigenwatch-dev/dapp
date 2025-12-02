@@ -17,9 +17,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`antialiased`}>
         <AppProvider>
-          <div className="flex w-full min-h-screen h-full bg-[#09090B] text-[#FFFFFF]">
+          <div className="flex flex-col w-full min-h-screen h-full bg-[#09090B] text-[#FFFFFF]">
             <NavBar />
-            <div className="max-w-[1440px] mx-auto flex flex-col">
+            <div className="max-w-[1440px] w-full mx-auto flex flex-col h-full overflow-y-auto px-[108px]">
               {children}
             </div>
           </div>

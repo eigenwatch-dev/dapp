@@ -11,7 +11,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import ClipLoader from "react-spinners/ClipLoader";
 import { ThreeDotsIcon } from "./components/ThreeDotsIcon";
 import { ActionsDropdown } from "./components/ActionsDropdown";
-import { TableDrawer } from "./components/TableDrawer";
 import { useTableTabs } from "./hooks/useTableTabs";
 import { useTableActions } from "./hooks/useTableActions";
 import Pagination, { PaginationProps } from "./components/Pagination";
@@ -35,8 +34,13 @@ export type TableAction = {
   icon?: React.ReactNode;
 };
 
+export interface TableColumnConfig {
+  key: string;
+  displayName: string;
+}
+
 export type ReusableTableProps = {
-  columns: { key: string; displayName: string }[];
+  columns: TableColumnConfig[];
   data: Record<string, any>[];
   tableFilters: TableFiltersProps;
   actions?: TableAction[];
@@ -45,7 +49,6 @@ export type ReusableTableProps = {
   paginationProps?: PaginationProps;
   enableMultiSelect?: boolean;
   rawData?: Record<string, any>[][];
-  drawerContent?: (selectedRow: any) => React.ReactNode;
   onRowClick?: (row: any) => void;
   altTabs?: ReusableTableProps[];
 };
@@ -60,12 +63,9 @@ const ReusableTable = ({
   tableFilters,
   enableMultiSelect,
   altTabs = [],
-  drawerContent,
   onRowClick,
   rawData,
 }: ReusableTableProps) => {
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<any>(null);
   const [activeTab, setActiveTab] = useState(0);
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const [dropdownPosition, setDropdownPosition] = useState<{
@@ -83,7 +83,6 @@ const ReusableTable = ({
     paginationProps,
     tableFilters,
     enableMultiSelect,
-    drawerContent,
     onRowClick,
     rawData,
     altTabs,
@@ -92,8 +91,6 @@ const ReusableTable = ({
 
   const { handleRowClick } = useTableActions({
     currentTab,
-    setSelectedRow,
-    setOpenDrawer,
     onRowClick,
     setDropdownPosition,
   });
@@ -115,7 +112,7 @@ const ReusableTable = ({
 
   const columns = useMemo(() => {
     const hasActions = currentTab.actions && currentTab.actions.length > 0;
-    const shouldUseRowClickForActions = hasActions && !currentTab.drawerContent;
+    const shouldUseRowClickForActions = hasActions;
 
     // Prepare actions with View Details if needed
     const actionsToUse = [...(currentTab.actions || [])];
@@ -154,21 +151,7 @@ const ReusableTable = ({
               enableSorting: false,
             },
           ]
-        : [
-            {
-              id: "s/n",
-              header: () => "S/N",
-              cell: ({ row }: { row: any }) => {
-                const index = row.index;
-                const pageNumber =
-                  currentTab.paginationProps?.pagination.page || 1;
-                const pageSize =
-                  currentTab.paginationProps?.pagination.limit || 10;
-                const serialNumber = (pageNumber - 1) * pageSize + index + 1;
-                return serialNumber;
-              },
-            },
-          ]),
+        : []),
 
       // User defined columns
       ...currentTab.columns.map((col) => ({
@@ -206,10 +189,6 @@ const ReusableTable = ({
               <ActionsDropdown
                 actions={actionsToUse}
                 row={row.original}
-                openDrawer={() => {
-                  setSelectedRow(row);
-                  setOpenDrawer(true);
-                }}
                 isOpen={isDropdownOpen}
                 onClose={() => {
                   setOpenDropdownId(null);
@@ -227,13 +206,10 @@ const ReusableTable = ({
     return formattedColumns;
   }, [
     currentTab.actions,
-    currentTab.drawerContent,
     currentTab.enableMultiSelect,
     currentTab.columns,
     currentTab.tableKey,
     currentTab.idKey,
-    currentTab.paginationProps?.pagination.page,
-    currentTab.paginationProps?.pagination.limit,
     allSelected,
     deselectAll,
     visibleIds,
@@ -257,10 +233,8 @@ const ReusableTable = ({
     subtitleKey: currentTab.columns[1]?.key,
   });
 
-  console.log({ mobileCards });
-
   return (
-    <div className="w-full flex flex-col bg-white rounded-[8.3px] p-[20px] max-md:p-[3px] mb-[40px]">
+    <div className="w-full flex flex-col rounded-[8.3px] mb-[40px]">
       <TableFilters
         {...currentTab.tableFilters}
         tabs={allTabs.map((tab) => tab.tableFilters)}
@@ -298,10 +272,6 @@ const ReusableTable = ({
                   <ActionsDropdown
                     actions={currentTab.actions}
                     row={mobileCard.raw}
-                    openDrawer={() => {
-                      setSelectedRow(mobileCard.raw);
-                      setOpenDrawer(true);
-                    }}
                     isOpen={isDropdownOpen}
                     onClose={() => {
                       setOpenDropdownId(null);
@@ -350,22 +320,25 @@ const ReusableTable = ({
       ) : (
         <>
           {/* Desktop Table */}
-          <div className="w-full overflow-x-auto">
-            <table className="w-full border-y border-[#E8E9EA]">
-              <thead className="">
+          <div className="w-full overflow-x-auto border-[1.33px] rounded-[14px] border-[#27272A80]">
+            <table className="w-full">
+              <thead className="bg-[#18181BB2]">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
+                  <tr
+                    key={headerGroup.id}
+                    className="border-b-[1.33px] border-[#27272A80] h-[52px]"
+                  >
                     {headerGroup.headers.map((header) => (
                       <th
                         key={header.id}
-                        className="text-left h-[48px] px-1 whitespace-nowrap"
+                        className="text-left h-[48px] px-[24px] py-[16px] whitespace-nowrap min-w-[100px]"
                       >
-                        <BodySix className="font-[500] text-[#949CA9]">
+                        <span className="text-[#9F9FA9] font-[600] text-[14px]">
                           {flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                        </BodySix>
+                        </span>
                       </th>
                     ))}
                   </tr>
@@ -392,24 +365,22 @@ const ReusableTable = ({
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className={`border-t border-[#E8E9EA] hover:bg-slate-100 ${
-                          currentTab.drawerContent && !hasMultipleActions
-                            ? "cursor-pointer"
-                            : ""
+                        className={`border-t-[1.33px] border-[#27272A4D] hover:bg-[#27272A]/5 ${
+                          !hasMultipleActions ? "cursor-pointer" : ""
                         }`}
                         onClick={(e) => handleRowClick(e, row.original)}
                       >
                         {row.getVisibleCells().map((cell) => (
                           <td
                             key={cell.id}
-                            className="h-[48px] px-1 whitespace-nowrap"
+                            className="h-[65px] px-[24px] py-[16px] whitespace-nowrap"
                           >
-                            <BodySix className="text-[#282828]">
+                            <div className="text-white text-[14px]">
                               {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()
                               )}
-                            </BodySix>
+                            </div>
                           </td>
                         ))}
                       </motion.tr>
@@ -427,13 +398,6 @@ const ReusableTable = ({
           <Pagination {...currentTab.paginationProps} />
         </div>
       )}
-
-      <TableDrawer
-        isOpen={openDrawer}
-        onClose={() => setOpenDrawer(false)}
-        currentTab={currentTab}
-        selectedRow={selectedRow}
-      />
     </div>
   );
 };

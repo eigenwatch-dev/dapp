@@ -6,7 +6,6 @@ import { TableAction } from "../ReuseableTable";
 
 type ActionsDropdownProps = {
   actions: TableAction[];
-  openDrawer: () => void;
   row: any;
   isOpen: boolean;
   onClose: () => void;
@@ -16,7 +15,6 @@ type ActionsDropdownProps = {
 export const ActionsDropdown = ({
   actions,
   row,
-  openDrawer,
   isOpen,
   onClose,
   position,
@@ -50,7 +48,7 @@ export const ActionsDropdown = ({
               <button
                 key={idx}
                 onClick={() => {
-                  action.handler({ openDrawer, data: { row } });
+                  // action.handler({ openDrawer, data: { row } });
                   onClose();
                 }}
                 className={`${

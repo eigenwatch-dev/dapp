@@ -45,7 +45,7 @@ export function NavBar() {
             return (
               <Link key={index} href={route.href}>
                 <button
-                  className={`flex h-[40px] py-[9px] ${
+                  className={`flex h-[40px] py-[8px] ${
                     isActive
                       ? "px-[24px] rounded-[20px] bg-[#1C398E33]"
                       : "bg-transparent"

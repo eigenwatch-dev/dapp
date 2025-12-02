@@ -267,7 +267,7 @@ const TableFilters = ({
   };
 
   return (
-    <div className="flex items-center justify-between pb-[30px]">
+    <div className="flex items-center justify-between pb-[30px] hidden">
       <div className="flex items-center space-x-2">
         {tabs && tabs.length > 1 ? (
           <div className="flex items-center">

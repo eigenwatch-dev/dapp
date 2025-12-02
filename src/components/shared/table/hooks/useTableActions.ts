@@ -4,16 +4,12 @@ import { getDropdownPosition } from "../utils/tableUtils";
 
 export type UseTableActionsProps = {
   currentTab: any;
-  setSelectedRow: (row: any) => void;
-  setOpenDrawer: (open: boolean) => void;
   onRowClick?: (row: any) => void;
   setDropdownPosition?: (pos: { x: number; y: number } | null) => void;
   setOpenDropdownId?: (id: string | null) => void;
 };
 export const useTableActions = ({
   currentTab,
-  setSelectedRow,
-  setOpenDrawer,
   onRowClick,
   setDropdownPosition,
 }: UseTableActionsProps) => {
@@ -28,21 +24,14 @@ export const useTableActions = ({
         const position = getDropdownPosition(e);
         if (setDropdownPosition) setDropdownPosition(position);
         setOpenDropdownId(row[currentTab.idKey!]);
-      } else if (currentTab.drawerContent && !hasActions) {
-        setSelectedRow(row);
-        setOpenDrawer(true);
       }
       onRowClick?.(row);
     },
     [
       shouldUseRowClickForActions,
-      currentTab.drawerContent,
       currentTab.idKey,
-      hasActions,
       onRowClick,
       setDropdownPosition,
-      setSelectedRow,
-      setOpenDrawer,
     ]
   );
 
