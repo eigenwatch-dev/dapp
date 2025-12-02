@@ -1,3 +1,4 @@
+// ==================== lib/api.ts ====================
 "use server";
 import axios from "axios";
 
@@ -11,5 +12,19 @@ const api = axios.create({
     "x-api-key": API_KEY,
   },
 });
+
+// Add response interceptor for consistent error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("API Request Failed:", {
+      url: error.config?.url,
+      method: error.config?.method,
+      status: error.response?.status,
+      message: error.message,
+    });
+    return Promise.reject(error);
+  }
+);
 
 export default api;

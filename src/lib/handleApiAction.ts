@@ -1,41 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// ==================== lib/handleApiAction.ts ====================
 "use server";
 
 import api from "@/lib/api";
 import { handleSuccess, handleError } from "@/lib/utils";
-// import { ApiResponse } from "@/types/apiResponse.types";
+import { AppApiResponse } from "@/types/api.types";
 
 interface ApiActionOptions {
   endpoint: string;
   method?: "get" | "post" | "put" | "patch" | "delete";
   body?: any;
   successMessage?: string;
-  setCookieOnToken?: boolean;
 }
 
-export async function handleApiAction({
+export async function handleApiAction<T = any>({
   endpoint,
   method = "post",
   body,
   successMessage,
-}: ApiActionOptions) {
+}: ApiActionOptions): Promise<AppApiResponse<T>> {
   try {
     const response =
       method === "get"
         ? await api.get(endpoint)
         : await api[method](endpoint, body);
 
-    // const data: ApiResponse<T> = response.data;
     const data = response.data;
 
     console.log(`API Response for ${endpoint}:`, data);
 
     if (!data.success) {
-      return handleError(data.error, true);
+      return handleError<T>(data.error, true);
     }
 
-    return handleSuccess(data, successMessage);
+    return handleSuccess<T>(data, successMessage);
   } catch (error: any) {
-    return handleError(error);
+    return handleError<T>(error);
   }
 }

@@ -1,5 +1,6 @@
+// ==================== lib/utils.ts ====================
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { ApiResponse, AppApiResponse } from "@/types/apiResponse.types";
+import { AppApiResponse } from "@/types/api.types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -7,10 +8,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function handleError(error: any, isErrResponse?: boolean): any {
-  // ): AppApiResponse<any> {
-  // console.log({ error });
-
+export function handleError<T = any>(
+  error: any,
+  isErrResponse?: boolean
+): AppApiResponse<T> {
   const safeResponse = error?.response
     ? {
         status: error.response.status,
@@ -22,7 +23,7 @@ export function handleError(error: any, isErrResponse?: boolean): any {
       }
     : error?.message || "Unknown error";
 
-  console.log("Some error occurred:", JSON.stringify(safeResponse, null, 2));
+  console.error("API Error:", JSON.stringify(safeResponse, null, 2));
 
   const errorCode = safeResponse?.data?.error?.errorCode;
   let message: string =
@@ -30,9 +31,10 @@ export function handleError(error: any, isErrResponse?: boolean): any {
     error.response?.data?.message ||
     error.message ||
     "Something went wrong";
+
   message =
     errorCode === "UNKNOWN_APP_ERROR"
-      ? "An unexpected error occurred on our side. Please try again shortly."
+      ? "An unexpected error occurred. Please try again."
       : message;
 
   return {
@@ -44,19 +46,15 @@ export function handleError(error: any, isErrResponse?: boolean): any {
   };
 }
 
-// export function handleSuccess<T = any>(
-//   data: ApiResponse<T>,
-//   message?: string
-// ): AppApiResponse<T> {
-
-export function handleSuccess(data: any, message?: string): any {
-  // console.log({ data });
-
+export function handleSuccess<T = any>(
+  data: any,
+  message?: string
+): AppApiResponse<T> {
   return {
     success: true,
     data: data,
     error: null,
-    errorCode: null,
+    errorCode: undefined,
     message: data?.message || message || "Action completed successfully",
   };
 }
