@@ -32,13 +32,22 @@ export default function OperatorPage() {
               className={
                 "flex py-[3px] w-[75px] rounded-[8px] " +
                 (operator.risk_level.toLowerCase() === "medium"
-                  ? "bg-[#162456]/20"
+                  ? "bg-blue-800/10"
                   : operator.risk_level.toLowerCase() === "high"
-                  ? "bg-[#032E1580]"
-                  : "bg-[#46080980]")
+                  ? "bg-green-800/10"
+                  : "bg-red-800/10")
               }
             >
-              <span className="capitalize text-[12px] flex mx-auto">
+              <span
+                className={
+                  "capitalize text-[12px] flex mx-auto " +
+                  (operator.risk_level.toLowerCase() === "medium"
+                    ? "text-blue-500"
+                    : operator.risk_level.toLowerCase() === "high"
+                    ? "text-green-500"
+                    : "text-red-500")
+                }
+              >
                 {operator.risk_level.toLowerCase()}
               </span>
             </button>
