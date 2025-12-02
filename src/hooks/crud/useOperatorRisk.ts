@@ -1,51 +1,50 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-// "use client";
+import {
+  getRiskAssessment,
+  getConcentrationMetrics,
+  getVolatilityMetrics,
+} from "@/actions/operator-risk";
+import { QUERY_KEYS } from "@/lib/queryKey";
+import { ConcentrationType, VolatilityMetricType } from "@/types/risk.types";
+import { useQuery } from "@tanstack/react-query";
 
-// import { QUERY_KEYS } from "@/utils/queryKey";
-// import useCustomQuery from "../custom/useCustomQuery";
-// import {
-//   getOperators,
-//   getOperatorById,
-//   getOperatorVolatility,
-//   getOperatorConcentration,
-// } from "@/actions/operator-risk";
+// ==================== RISK & ANALYTICS ====================
 
-// // Hook: Get all operators with pagination and filtering
-// export const useOperators = (params?: any) => {
-//   return useCustomQuery({
-//     queryKey: QUERY_KEYS.getOperators(params),
-//     queryFn: () => getOperators(params),
-//     params,
-//   });
-// };
+export const useRiskAssessment = (
+  id: string,
+  date?: string,
+  enabled = true
+) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.operatorRisk(id, date),
+    queryFn: () => getRiskAssessment(id, date),
+    enabled: enabled && !!id,
+  });
+};
 
-// // Hook: Get detailed risk data for a specific operator
-// export const useOperatorById = (operatorId: string) => {
-//   return useCustomQuery({
-//     queryKey: QUERY_KEYS.getOperatorById(operatorId),
-//     queryFn: () => getOperatorById(operatorId),
-//     params: operatorId,
-//     enabled: !!operatorId,
-//   });
-// };
+export const useConcentrationMetrics = (
+  id: string,
+  concentrationType: ConcentrationType = "delegation",
+  date?: string,
+  enabled = true
+) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.operatorConcentration(id, { concentrationType, date }),
+    queryFn: () => getConcentrationMetrics(id, concentrationType, date),
+    enabled: enabled && !!id,
+  });
+};
 
-// // Hook: Get volatility metrics for an operator
-// export const useOperatorVolatility = (operatorId: string) => {
-//   return useCustomQuery({
-//     queryKey: QUERY_KEYS.getOperatorVolatility(operatorId),
-//     queryFn: () => getOperatorVolatility(operatorId),
-//     params: operatorId,
-//     enabled: !!operatorId,
-//   });
-// };
-
-// // Hook: Get concentration metrics for an operator
-// export const useOperatorConcentration = (operatorId: string) => {
-//   return useCustomQuery({
-//     queryKey: QUERY_KEYS.getOperatorConcentration(operatorId),
-//     queryFn: () => getOperatorConcentration(operatorId),
-//     params: operatorId,
-//     enabled: !!operatorId,
-//   });
-// };
+export const useVolatilityMetrics = (
+  id: string,
+  metricType: VolatilityMetricType = "tvs",
+  date?: string,
+  enabled = true
+) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.operatorVolatility(id, { metricType, date }),
+    queryFn: () => getVolatilityMetrics(id, metricType, date),
+    enabled: enabled && !!id,
+  });
+};
