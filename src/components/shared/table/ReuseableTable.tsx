@@ -8,7 +8,6 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { motion, AnimatePresence } from "framer-motion";
-// import { EyeIcon } from "lucide-react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { ThreeDotsIcon } from "./components/ThreeDotsIcon";
 import { ActionsDropdown } from "./components/ActionsDropdown";
@@ -20,11 +19,11 @@ import TableFilters, { TableFiltersProps } from "./components/TableFilters";
 import { getDropdownPosition } from "./utils/tableUtils";
 import { Checkbox } from "@/components/ui/checkbox";
 import useSelectionStore from "@/hooks/store/useSelect";
-import BodySix from "@/components/typography/BodySix";
 import { useBreakpoint } from "@/hooks/ui/useBreakpoints";
 import { useMobileCardData } from "./components/useMobileCardData";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import BodySix from "@/components/typography/BodySix";
 
 export type TableAction = {
   label: string;

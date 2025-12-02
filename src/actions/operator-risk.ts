@@ -1,50 +1,93 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use server";
+// "use server";
 
-import api from "@/utils/api";
-import handleError, { handleSuccess } from "@/utils/handleResponse";
+// import { handleApiAction } from "@/lib/handleApiAction";
+// import { PaginatedResponse } from "@/types/apiResponse.types";
+// import {
+//   CreateBusiness,
+//   UpdateBusinessStage1,
+//   UpdateBusinessStage2,
+//   UpdateBusinessStage3,
+//   UpdateBusinessStage4,
+//   UpdateBusinessStage5,
+//   Business,
+// } from "@/types/business.types";
 
-// Get all operators with pagination and filtering
-// TODO: Update params typing
-export const getOperators = async (params?: any) => {
-  try {
-    const { data } = await api.get("/api/risk/operators", { params });
-    return handleSuccess(data, "Fetched operators successfully.");
-  } catch (error: any) {
-    return handleError(error);
-  }
-};
+// export const createBusiness = async (body: CreateBusiness) =>
+//   handleApiAction<Business>({
+//     endpoint: "/businesses",
+//     body,
+//     successMessage: "Business created successfully",
+//   });
 
-// Get detailed risk data for a specific operator
-export const getOperatorById = async (operatorId: string) => {
-  try {
-    const { data } = await api.get(`/api/risk/operators/${operatorId}`);
-    return handleSuccess(data, "Fetched operator details successfully.");
-  } catch (error: any) {
-    return handleError(error);
-  }
-};
+// export const getUserBusinesses = async () =>
+//   handleApiAction<PaginatedResponse<Business>>({
+//     endpoint: "/businesses/user/all",
+//     method: "get",
+//   });
 
-// Get volatility metrics for an operator
-export const getOperatorVolatility = async (operatorId: string) => {
-  try {
-    const { data } = await api.get(
-      `/api/risk/operators/${operatorId}/volatility`
-    );
-    return handleSuccess(data, "Fetched operator volatility successfully.");
-  } catch (error: any) {
-    return handleError(error);
-  }
-};
+// export const getBusiness = async (id: string) =>
+//   handleApiAction<Business>({
+//     endpoint: `/businesses/${id}`,
+//     method: "get",
+//   });
 
-// Get concentration metrics for an operator
-export const getOperatorConcentration = async (operatorId: string) => {
-  try {
-    const { data } = await api.get(
-      `/api/risk/operators/${operatorId}/concentration`
-    );
-    return handleSuccess(data, "Fetched operator concentration successfully.");
-  } catch (error: any) {
-    return handleError(error);
-  }
-};
+// export const updateBusinessStage1 = async (
+//   id: string,
+//   body: UpdateBusinessStage1
+// ) =>
+//   handleApiAction<Business>({
+//     endpoint: `/businesses/${id}/stage/basic-info`,
+//     method: "patch",
+//     body,
+//     successMessage: "Basic information updated successfully",
+//   });
+
+// export const updateBusinessStage2 = async (
+//   id: string,
+//   body: UpdateBusinessStage2
+// ) =>
+//   handleApiAction<Business>({
+//     endpoint: `/businesses/${id}/stage/business-info`,
+//     method: "patch",
+//     body,
+//     successMessage: "Business information updated successfully",
+//   });
+
+// export const updateBusinessStage3 = async (
+//   id: string,
+//   body: UpdateBusinessStage3
+// ) =>
+//   handleApiAction<Business>({
+//     endpoint: `/businesses/${id}/stage/technical-info`,
+//     method: "patch",
+//     body,
+//     successMessage: "Technical information updated successfully",
+//   });
+
+// export const updateBusinessStage4 = async (
+//   id: string,
+//   body: UpdateBusinessStage4
+// ) =>
+//   handleApiAction<Business>({
+//     endpoint: `/businesses/${id}/stage/compliance-security`,
+//     method: "patch",
+//     body,
+//     successMessage: "Compliance and security updated successfully",
+//   });
+
+// export const updateBusinessStage5 = async (
+//   id: string,
+//   body: UpdateBusinessStage5
+// ) =>
+//   handleApiAction<Business>({
+//     endpoint: `/businesses/${id}/stage/services-offered`,
+//     method: "patch",
+//     body,
+//     successMessage: "Services information updated successfully",
+//   });
+
+// export const submitBusinessForApproval = async (id: string) =>
+//   handleApiAction<Business>({
+//     endpoint: `/businesses/${id}/submit`,
+//     successMessage: "Business submitted for approval successfully",
+//   });

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ApiResponse, AppApiResponse } from "@/types/apiResponse.types";
+// import { ApiResponse, AppApiResponse } from "@/types/apiResponse.types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -7,10 +7,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function handleError(
-  error: any,
-  isErrResponse?: boolean
-): AppApiResponse<any> {
+export function handleError(error: any, isErrResponse?: boolean): any {
+  // ): AppApiResponse<any> {
   // console.log({ error });
 
   const safeResponse = error?.response
@@ -46,10 +44,12 @@ export function handleError(
   };
 }
 
-export function handleSuccess<T = any>(
-  data: ApiResponse<T>,
-  message?: string
-): AppApiResponse<T> {
+// export function handleSuccess<T = any>(
+//   data: ApiResponse<T>,
+//   message?: string
+// ): AppApiResponse<T> {
+
+export function handleSuccess(data: any, message?: string): any {
   // console.log({ data });
 
   return {

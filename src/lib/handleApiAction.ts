@@ -2,9 +2,8 @@
 "use server";
 
 import api from "@/lib/api";
-import { setAuthCookie } from "@/actions/util";
 import { handleSuccess, handleError } from "@/lib/utils";
-import { ApiResponse } from "@/types/apiResponse.types";
+// import { ApiResponse } from "@/types/apiResponse.types";
 
 interface ApiActionOptions {
   endpoint: string;
@@ -14,12 +13,11 @@ interface ApiActionOptions {
   setCookieOnToken?: boolean;
 }
 
-export async function handleApiAction<T = any>({
+export async function handleApiAction({
   endpoint,
   method = "post",
   body,
   successMessage,
-  setCookieOnToken = false,
 }: ApiActionOptions) {
   try {
     const response =
@@ -27,19 +25,16 @@ export async function handleApiAction<T = any>({
         ? await api.get(endpoint)
         : await api[method](endpoint, body);
 
-    const data: ApiResponse<T> = response.data;
+    // const data: ApiResponse<T> = response.data;
+    const data = response.data;
 
     console.log(`API Response for ${endpoint}:`, data);
-
-    if (setCookieOnToken && (data.data as any)?.token) {
-      await setAuthCookie((data.data as any)?.token);
-    }
 
     if (!data.success) {
       return handleError(data.error, true);
     }
 
-    return handleSuccess<T>(data, successMessage);
+    return handleSuccess(data, successMessage);
   } catch (error: any) {
     return handleError(error);
   }
