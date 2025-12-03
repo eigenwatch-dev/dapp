@@ -1,20 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SectionContainer } from "@/components/shared/data/SectionContainer";
+import { StatCard } from "@/components/shared/data/StatCard";
+import ReusableTable from "@/components/shared/table/ReuseableTable";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table";
-import { Table, Badge } from "lucide-react";
+import { AllocationsOverview } from "@/types/allocation.types";
 
 // components/operator/tabs/AllocationsTab.tsx
 interface AllocationsTabProps {
   operatorId: string;
-  allocations: any;
+  allocations?: AllocationsOverview;
   isLoading: boolean;
 }
 
@@ -33,54 +28,32 @@ export const AllocationsTab = ({
     );
   }
 
+  console.log({ allocations });
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground">Total Allocated</p>
-            <p className="text-2xl font-bold">
-              {allocations?.totalAllocated || 0} ETH
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground">Utilization Rate</p>
-            <p className="text-2xl font-bold">
-              {allocations?.utilizationRate || 0}%
-            </p>
-          </CardContent>
-        </Card>
+        <StatCard
+          title="Total Allocated"
+          value={<>{allocations?.total_allocations || 0} ETH</>}
+        />
+        <StatCard
+          title="Total Encumbered Magnitude"
+          value={<>{allocations?.total_encumbered_magnitude || 0} ETH</>}
+        />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Allocations by AVS</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>AVS</TableHead>
-                <TableHead>Total Magnitude</TableHead>
-                <TableHead>Strategies</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {allocations?.byAVS?.map((alloc: any) => (
-                <TableRow key={alloc.avsId}>
-                  <TableCell>{alloc.avsName}</TableCell>
-                  <TableCell>{alloc.totalMagnitude} ETH</TableCell>
-                  <TableCell>
-                    <Badge>{alloc.strategies}</Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <SectionContainer heading="Allocations by AVS">
+        <ReusableTable
+          columns={[
+            { key: "avs_name", displayName: "AVS" },
+            { key: "status", displayName: "Total Magnitude" },
+            { key: "operator_sets", displayName: "Strategies" },
+          ]}
+          data={allocations?.by_avs || []}
+          tableFilters={{ title: "Allocations by AVS" }}
+        />
+      </SectionContainer>
     </div>
   );
 };

@@ -3,10 +3,10 @@
 import { SortOrder } from "./operator.types";
 
 export interface AllocationsOverview {
-  byAVS: AllocationByAVS[];
-  byStrategy: AllocationByStrategy[];
-  totalAllocated: number;
-  utilizationRate: number;
+  by_avs: AllocationByAVS[];
+  by_strategy: AllocationByStrategy[];
+  total_allocations: number;
+  total_encumbered_magnitude: number;
 }
 
 export interface AllocationByAVS {

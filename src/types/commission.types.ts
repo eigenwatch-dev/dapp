@@ -3,9 +3,9 @@
 export type CommissionType = "pi" | "avs" | "operator_set";
 
 export interface CommissionOverview {
-  pi: number;
-  avs: CommissionByAVS[];
-  operatorSet: CommissionByOperatorSet[];
+  pi_commission: number;
+  avs_commissions: CommissionByAVS[];
+  operator_set_commissions: CommissionByOperatorSet[];
 }
 
 export interface CommissionByAVS {

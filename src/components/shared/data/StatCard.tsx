@@ -5,11 +5,11 @@ import { InfoHeading } from "./InfoHeading";
 
 export interface StatCardProps {
   title: string;
-  value: string | number;
+  value: string | number | React.ReactNode;
   subtitle?: React.ReactNode;
   icon?: React.ReactNode;
   trend?: number;
-  tooltip: string;
+  tooltip?: string;
   isLoading?: boolean;
 }
 

@@ -26,8 +26,10 @@ export const RiskAnalysisTab = ({
     );
   }
 
+  console.log({ risk });
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Card>
         <CardHeader>
           <CardTitle>Risk Score Breakdown</CardTitle>

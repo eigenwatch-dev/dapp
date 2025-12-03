@@ -349,7 +349,7 @@ const OperatorProfile = () => {
         <TabsContent value="strategies">
           <StrategiesTab
             operatorId={operatorId}
-            strategies={strategiesData || []}
+            strategies={strategiesData?.strategies || []}
             isLoading={loadingStrategies}
           />
         </TabsContent>
@@ -357,7 +357,7 @@ const OperatorProfile = () => {
         <TabsContent value="avs">
           <AVSTab
             operatorId={operatorId}
-            avsList={avsData || []}
+            avsList={avsData?.avs_relationships || []}
             isLoading={loadingAVS}
           />
         </TabsContent>
@@ -365,7 +365,7 @@ const OperatorProfile = () => {
         <TabsContent value="delegators">
           <DelegatorsTab
             operatorId={operatorId}
-            delegators={delegatorsData?.data}
+            delegators={delegatorsData}
             isLoading={loadingDelegators}
           />
         </TabsContent>
@@ -373,7 +373,7 @@ const OperatorProfile = () => {
         <TabsContent value="allocations">
           <AllocationsTab
             operatorId={operatorId}
-            allocations={allocationsData?.data}
+            allocations={allocationsData}
             isLoading={loadingAllocations}
           />
         </TabsContent>
@@ -381,7 +381,7 @@ const OperatorProfile = () => {
         <TabsContent value="commission">
           <CommissionTab
             operatorId={operatorId}
-            commission={commissionData?.data}
+            commission={commissionData}
             isLoading={loadingCommission}
           />
         </TabsContent>

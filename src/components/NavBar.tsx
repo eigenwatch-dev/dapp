@@ -23,6 +23,10 @@ export function NavBar() {
       label: "Staker",
       href: "/staker",
     },
+    {
+      label: "Strategy",
+      href: "/strategy",
+    },
   ];
 
   return (

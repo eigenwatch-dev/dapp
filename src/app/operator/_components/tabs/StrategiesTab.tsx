@@ -128,12 +128,10 @@ const StrategiesTab = ({
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
-          <CardContent className="pt-6">
-            <div className="space-y-2">
+          <CardContent className="p-0 flex">
+            <div className="space-y-2 my-auto">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  Total Strategies
-                </span>
+                <span className="text-sm text-[#9F9FA9]">Total Strategies</span>
                 <Badge variant="secondary">{strategies.length}</Badge>
               </div>
               <p className="text-2xl font-bold">{strategies.length}</p>

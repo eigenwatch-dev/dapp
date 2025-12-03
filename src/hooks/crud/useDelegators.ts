@@ -25,6 +25,7 @@ export const useOperatorDelegators = (
     queryKey: QUERY_KEYS.operatorDelegators(id, params),
     queryFn: () => getOperatorDelegators(id, params),
     enabled: enabled && !!id,
+    select: (data) => data.data?.data,
   });
 };
 

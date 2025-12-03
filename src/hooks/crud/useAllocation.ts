@@ -17,6 +17,7 @@ export const useAllocationsOverview = (id: string, enabled = true) => {
     queryKey: QUERY_KEYS.operatorAllocations(id),
     queryFn: () => getAllocationsOverview(id),
     enabled: enabled && !!id,
+    select: (data) => data.data?.data,
   });
 };
 

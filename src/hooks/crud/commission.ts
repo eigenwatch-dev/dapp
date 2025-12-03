@@ -15,6 +15,7 @@ export const useOperatorCommission = (id: string, enabled = true) => {
     queryKey: QUERY_KEYS.operatorCommission(id),
     queryFn: () => getOperatorCommission(id),
     enabled: enabled && !!id,
+    select: (data) => data.data?.data,
   });
 };
 

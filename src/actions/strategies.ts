@@ -21,7 +21,7 @@ export const getOperatorStrategies = async (
   const queryString = params
     ? `?${new URLSearchParams(params as any).toString()}`
     : "";
-  return handleApiAction<Strategy[]>({
+  return handleApiAction<{ strategies: Strategy[] }>({
     endpoint: `/api/v1/operators/${id}/strategies${queryString}`,
     method: "get",
   });
