@@ -28,23 +28,27 @@ export interface OperatorListParams {
   sort_order?: SortOrder;
 }
 
-export interface Operator {
-  id: string;
-  address: string;
+export interface OperatorMetadata {
   name?: string;
   logo?: string;
   website?: string;
   description?: string;
-  totalTVS: number;
-  delegatorCount: number;
-  avsCount: number;
-  operationalDays: number;
-  riskScore?: number;
-  isActive: boolean;
-  hasBeenSlashed: boolean;
-  isPermissioned: boolean;
-  createdAt: string;
-  updatedAt: string;
+  [key: string]: any;
+}
+
+export interface Operator {
+  operator_id: string;
+  operator_address: string;
+  is_active: boolean;
+  total_tvs: string;
+  delegator_count: number;
+  active_avs_count: number;
+  operational_days: number;
+  current_pi_commission_bips: number;
+  total_slash_events: number;
+  risk_level: "CRITICAL" | "LOW" | "MEDIUM" | "HIGH";
+  risk_score: string;
+  metadata: OperatorMetadata | null;
 }
 
 export interface OperatorStats {

@@ -389,14 +389,13 @@ const ReusableTable = ({
                 </AnimatePresence>
               </tbody>
             </table>
+            {currentTab.paginationProps && (
+              <div className="">
+                <Pagination {...currentTab.paginationProps} />
+              </div>
+            )}
           </div>
         </>
-      )}
-
-      {currentTab.paginationProps && (
-        <div className="mt-4">
-          <Pagination {...currentTab.paginationProps} />
-        </div>
       )}
     </div>
   );

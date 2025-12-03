@@ -26,6 +26,7 @@ export const useOperators = (params?: OperatorListParams) => {
   return useQuery({
     queryKey: QUERY_KEYS.operators(params),
     queryFn: () => getOperators(params),
+    select: (data) => data.data,
   });
 };
 
@@ -34,6 +35,7 @@ export const useOperator = (id: string, enabled = true) => {
     queryKey: QUERY_KEYS.operator(id),
     queryFn: () => getOperator(id),
     enabled: enabled && !!id,
+    select: (data) => data.data,
   });
 };
 

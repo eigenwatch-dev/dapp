@@ -8,6 +8,7 @@ import {
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
 import ReusableTable, { TableColumnConfig } from "./table/ReuseableTable";
+import { PaginationProps } from "./table/components/Pagination";
 
 export function ListEntityView({
   searchPlaceholder,
@@ -19,6 +20,7 @@ export function ListEntityView({
   tableConfig: {
     columns: TableColumnConfig[];
     data: Record<string, any>[];
+    paginationProps?: PaginationProps;
   };
 }) {
   return (
@@ -46,6 +48,7 @@ export function ListEntityView({
           columns={tableConfig.columns}
           data={tableConfig.data}
           tableFilters={{ title: entity }}
+          paginationProps={tableConfig.paginationProps}
         />
       </div>
     </div>

@@ -9,33 +9,34 @@ import {
 } from "react-icons/fa";
 import BodyOne from "@/components/typography/BodyOne";
 
-interface BackendPagination {
+interface OffsetPagination {
   total: number;
-  page: number; // 1-based
+  offset: number;
   limit: number;
-  totalPages: number;
 }
 
 export interface PaginationProps {
-  pagination: BackendPagination;
-  onPageChange: (newPage: number) => void;
+  pagination: OffsetPagination;
+  onOffsetChange: (newOffset: number) => void;
   onLimitChange?: (newLimit: number) => void;
   isLoading?: boolean;
 }
 
 const Pagination = ({
   pagination,
-  onPageChange,
+  onOffsetChange,
   onLimitChange,
   isLoading = false,
 }: PaginationProps) => {
-  const { total, page, limit, totalPages } = pagination;
+  const { total, offset, limit } = pagination;
   const [pagesToShow, setPagesToShow] = useState<number[]>([]);
   const [showPageInput, setShowPageInput] = useState(false);
   const [pageInputValue, setPageInputValue] = useState("");
   const [showLimitDropdown, setShowLimitDropdown] = useState(false);
 
-  const pageIndex = page - 1;
+  // Calculate current page (1-based) and total pages
+  const currentPage = Math.floor(offset / limit) + 1;
+  const totalPages = Math.ceil(total / limit);
 
   // Common page limits for selection
   const limitOptions = [5, 10, 20, 50, 100];
@@ -45,33 +46,34 @@ const Pagination = ({
       const totalToShow = 5;
 
       if (totalPages <= totalToShow) {
-        return Array.from({ length: totalPages }, (_, i) => i);
+        return Array.from({ length: totalPages }, (_, i) => i + 1);
       }
 
-      let start = Math.max(0, pageIndex - 2);
+      let start = Math.max(1, currentPage - 2);
       let end = start + totalToShow - 1;
 
-      if (end >= totalPages) {
-        end = totalPages - 1;
-        start = end - (totalToShow - 1);
+      if (end > totalPages) {
+        end = totalPages;
+        start = Math.max(1, end - (totalToShow - 1));
       }
 
       return Array.from({ length: end - start + 1 }, (_, i) => start + i);
     };
 
     setPagesToShow(getPageNumbers());
-  }, [pageIndex, pagination, totalPages]);
+  }, [currentPage, totalPages]);
 
-  const handlePageJump = (targetPage: number) => {
-    const clampedPage = Math.max(1, Math.min(targetPage, totalPages));
-    onPageChange(clampedPage);
+  const handlePageChange = (page: number) => {
+    const clampedPage = Math.max(1, Math.min(page, totalPages));
+    const newOffset = (clampedPage - 1) * limit;
+    onOffsetChange(newOffset);
   };
 
   const handlePageInputSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const targetPage = parseInt(pageInputValue);
     if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= totalPages) {
-      handlePageJump(targetPage);
+      handlePageChange(targetPage);
     }
     setPageInputValue("");
     setShowPageInput(false);
@@ -80,11 +82,8 @@ const Pagination = ({
   const handleLimitChange = (newLimit: number) => {
     if (onLimitChange) {
       onLimitChange(newLimit);
-    } else {
-      // Fallback: Calculate what the current page should be with the new limit
-      const currentFirstItem = (page - 1) * limit + 1;
-      const newPage = Math.ceil(currentFirstItem / newLimit);
-      onPageChange(newPage);
+      // Reset to first page when changing limit
+      onOffsetChange(0);
     }
     setShowLimitDropdown(false);
   };
@@ -92,14 +91,17 @@ const Pagination = ({
   const skip5Pages = (direction: "forward" | "backward") => {
     const targetPage =
       direction === "forward"
-        ? Math.min(page + 5, totalPages)
-        : Math.max(page - 5, 1);
-    handlePageJump(targetPage);
+        ? Math.min(currentPage + 5, totalPages)
+        : Math.max(currentPage - 5, 1);
+    handlePageChange(targetPage);
   };
+
+  const startItem = Math.min(offset + 1, total);
+  const endItem = Math.min(offset + limit, total);
 
   return (
     <motion.div
-      className="flex items-center justify-between h-[48px] w-full bg-[#FCFCFC] rounded-b-[4px] text-text-3-brand"
+      className="flex items-center justify-between h-[48px] w-full bg-[#18181B4D] rounded-b-[4px] text-[#9F9FA9]"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -107,9 +109,8 @@ const Pagination = ({
       {/* Results info and records per page */}
       <div className="flex items-center gap-4">
         <div className="text-sm">
-          <BodyOne className="font-[600] text-grey-5-brand">
-            Showing {Math.min(pageIndex * limit + 1, total)} to{" "}
-            {Math.min(page * limit, total)} of {total} results
+          <BodyOne className="font-[600]">
+            Showing {startItem} to {endItem} of {total} results
           </BodyOne>
         </div>
 
@@ -119,7 +120,7 @@ const Pagination = ({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setShowLimitDropdown(!showLimitDropdown)}
-            className="flex items-center gap-1 px-2 py-1 text-xs bg-white rounded border hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-1 px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
             disabled={isLoading}
           >
             <span>{limit} per page</span>
@@ -138,14 +139,14 @@ const Pagination = ({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
-                className="absolute bottom-full mb-1 left-0 bg-white border rounded shadow-lg z-10 min-w-[100px]"
+                className="absolute bottom-full mb-1 left-0 border rounded shadow-lg z-10 min-w-[100px]"
               >
                 {limitOptions.map((option) => (
                   <motion.button
                     key={option}
-                    whileHover={{ backgroundColor: "#f3f4f6" }}
+                    // whileHover={{ backgroundColor: "#f3f4f6" }}
                     onClick={() => handleLimitChange(option)}
-                    className={`w-full px-3 py-2 text-left text-xs hover:bg-gray-100 first:rounded-t last:rounded-b transition-colors ${
+                    className={`w-full px-3 py-2 text-left text-xs first:rounded-t last:rounded-b transition-colors ${
                       option === limit
                         ? "bg-blue-50 text-blue-600 font-medium"
                         : ""
@@ -161,14 +162,14 @@ const Pagination = ({
       </div>
 
       {/* Navigation controls */}
-      <div className="flex items-center gap-1 bg-white py-[3px] px-[20px] rounded-[6px]">
-        {/* First page / Skip backward */}
+      <div className="flex items-center gap-1 py-[3px] px-[20px] rounded-[6px]">
+        {/* First page */}
         <motion.button
           whileTap={{ scale: 0.95 }}
           whileHover={{ scale: 1.05 }}
-          onClick={() => handlePageJump(1)}
-          disabled={page === 1 || isLoading}
-          className="px-2 py-1 rounded disabled:opacity-50 hover:bg-white/50 transition-colors"
+          onClick={() => onOffsetChange(0)}
+          disabled={currentPage === 1 || isLoading}
+          className="px-2 py-1 rounded disabled:opacity-50 transition-colors"
           title="First page"
         >
           <FaAngleDoubleLeft size="0.75rem" />
@@ -179,8 +180,8 @@ const Pagination = ({
           whileTap={{ scale: 0.95 }}
           whileHover={{ scale: 1.05 }}
           onClick={() => skip5Pages("backward")}
-          disabled={page <= 5 || isLoading}
-          className="px-2 py-1 rounded disabled:opacity-50 hover:bg-white/50 transition-colors text-xs"
+          disabled={currentPage <= 5 || isLoading}
+          className="px-2 py-1 rounded disabled:opacity-50 transition-colors text-xs"
           title="Skip 5 pages back"
         >
           -5
@@ -190,29 +191,29 @@ const Pagination = ({
         <motion.button
           whileTap={{ scale: 0.95 }}
           whileHover={{ scale: 1.05 }}
-          onClick={() => onPageChange(page - 1)}
-          disabled={page === 1 || isLoading}
-          className="px-2 py-1 rounded disabled:opacity-50 hover:bg-white/50 transition-colors"
+          onClick={() => onOffsetChange(offset - limit)}
+          disabled={currentPage === 1 || isLoading}
+          className="px-2 py-1 rounded disabled:opacity-50 transition-colors"
           title="Previous page"
         >
           <FaLessThan size="0.75rem" />
         </motion.button>
 
         {/* Page numbers */}
-        {pagesToShow.map((pageNum, index) => (
+        {pagesToShow.map((pageNum) => (
           <motion.button
-            key={index}
+            key={pageNum}
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.05 }}
-            onClick={() => onPageChange(pageNum + 1)}
+            onClick={() => handlePageChange(pageNum)}
             disabled={isLoading}
             className={`px-3 py-1 rounded transition-colors duration-200 min-w-[32px] ${
-              pageIndex === pageNum
-                ? "bg-primary text-white shadow-sm"
+              currentPage === pageNum
+                ? "bg-primary shadow-sm"
                 : "hover:bg-white/70"
             }`}
           >
-            <BodyOne className="font-[600]">{pageNum + 1}</BodyOne>
+            <BodyOne className="font-[600]">{pageNum}</BodyOne>
           </motion.button>
         ))}
 
@@ -238,7 +239,7 @@ const Pagination = ({
                   }}
                   autoFocus
                   className="w-16 px-2 py-1 text-xs border rounded text-center"
-                  placeholder={page.toString()}
+                  placeholder={currentPage.toString()}
                 />
               </motion.form>
             ) : (
@@ -249,7 +250,7 @@ const Pagination = ({
                 whileHover={{ scale: 1.05 }}
                 onClick={() => setShowPageInput(true)}
                 disabled={isLoading}
-                className="px-2 py-1 rounded hover:bg-white/50 transition-colors text-xs"
+                className="px-2 py-1 rounded transition-colors text-xs"
                 title="Jump to page"
               >
                 ...
@@ -262,9 +263,9 @@ const Pagination = ({
         <motion.button
           whileTap={{ scale: 0.95 }}
           whileHover={{ scale: 1.05 }}
-          onClick={() => onPageChange(page + 1)}
-          disabled={page === totalPages || isLoading}
-          className="px-2 py-1 rounded disabled:opacity-50 hover:bg-white/50 transition-colors"
+          onClick={() => onOffsetChange(offset + limit)}
+          disabled={currentPage === totalPages || isLoading}
+          className="px-2 py-1 rounded disabled:opacity-50 transition-colors"
           title="Next page"
         >
           <FaGreaterThan size="0.75rem" />
@@ -275,8 +276,8 @@ const Pagination = ({
           whileTap={{ scale: 0.95 }}
           whileHover={{ scale: 1.05 }}
           onClick={() => skip5Pages("forward")}
-          disabled={page >= totalPages - 4 || isLoading}
-          className="px-2 py-1 rounded disabled:opacity-50 hover:bg-white/50 transition-colors text-xs"
+          disabled={currentPage >= totalPages - 4 || isLoading}
+          className="px-2 py-1 rounded disabled:opacity-50 transition-colors text-xs"
           title="Skip 5 pages forward"
         >
           +5
@@ -286,9 +287,9 @@ const Pagination = ({
         <motion.button
           whileTap={{ scale: 0.95 }}
           whileHover={{ scale: 1.05 }}
-          onClick={() => handlePageJump(totalPages)}
-          disabled={page === totalPages || isLoading}
-          className="px-2 py-1 rounded disabled:opacity-50 hover:bg-white/50 transition-colors"
+          onClick={() => onOffsetChange((totalPages - 1) * limit)}
+          disabled={currentPage === totalPages || isLoading}
+          className="px-2 py-1 rounded disabled:opacity-50 transition-colors"
           title="Last page"
         >
           <FaAngleDoubleRight size="0.75rem" />

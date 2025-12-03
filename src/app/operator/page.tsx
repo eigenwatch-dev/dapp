@@ -1,22 +1,29 @@
+"use client";
+import { useState } from "react";
 import { ListEntityView } from "@/components/shared/ListEntityView";
 import { TableColumnConfig } from "@/components/shared/table/ReuseableTable";
-import operatorData from "./dummy_data.json";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useOperators } from "@/hooks/crud/useOperator";
 
 export default function OperatorPage() {
+  const [offset, setOffset] = useState(0);
+  const [limit, setLimit] = useState(20);
+
+  const { data, isLoading } = useOperators({
+    limit,
+    offset,
+  });
+
+  const operatorData = data?.data || [];
+  const total = data?.total || 0;
+
   const operatorsColumns: TableColumnConfig[] = [
-    // { key: "operator_id", displayName: "Operator ID" },
-    // { key: "operator_address", displayName: "Operator Address" },
     { key: "operator", displayName: "Operator" },
-    // { key: "is_active", displayName: "Active" },
     { key: "risk_level", displayName: "Risk Level" },
     { key: "risk_score", displayName: "Risk Score" },
     { key: "active_avs_count", displayName: "Active AVS" },
-    // { key: "total_tvs", displayName: "Total TVS" },
     { key: "delegator_count", displayName: "Delegator Count" },
     { key: "operational_days", displayName: "Operational Days" },
-    // { key: "current_pi_commission_bips", displayName: "PI Commission (BIPS)" },
-    // { key: "total_slash_events", displayName: "Slash Events" },
   ];
 
   return (
@@ -69,6 +76,19 @@ export default function OperatorPage() {
             </div>
           ),
         })),
+        paginationProps: {
+          pagination: {
+            total,
+            offset,
+            limit,
+          },
+          onOffsetChange: setOffset,
+          onLimitChange: (newLimit) => {
+            setLimit(newLimit);
+            setOffset(0); // Reset to first page when changing limit
+          },
+          isLoading,
+        },
       }}
     />
   );
