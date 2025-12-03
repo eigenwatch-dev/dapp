@@ -253,7 +253,7 @@ const ReusableTable = ({
                       transition={{ duration: 0.2 }}
                     >
                       <td colSpan={columns.length} className="text-center py-6">
-                        <ClipLoader size={30} color="#147A66" />
+                        <ClipLoader size={30} color="#030e72dd" />
                       </td>
                     </motion.tr>
                   ) : (
@@ -300,7 +300,7 @@ const ReusableTable = ({
               </tbody>
             </table>
             {currentTab.paginationProps && (
-              <div className="">
+              <div className="px-[24px] bg-[#18181BB2]">
                 <Pagination {...currentTab.paginationProps} />
               </div>
             )}

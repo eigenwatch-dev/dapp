@@ -120,7 +120,7 @@ const Pagination = ({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setShowLimitDropdown(!showLimitDropdown)}
-            className="flex items-center gap-1 px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-1 px-2 py-1 text-xs rounded border border-white/10 hover:bg-gray-50/10 transition-colors"
             disabled={isLoading}
           >
             <span>{limit} per page</span>
@@ -139,16 +139,16 @@ const Pagination = ({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
-                className="absolute bottom-full mb-1 left-0 border rounded shadow-lg z-10 min-w-[100px]"
+                className="absolute bottom-full mb-1 left-0 border border-white/10 rounded shadow-lg z-10 min-w-[100px]"
               >
                 {limitOptions.map((option) => (
                   <motion.button
                     key={option}
                     // whileHover={{ backgroundColor: "#f3f4f6" }}
                     onClick={() => handleLimitChange(option)}
-                    className={`w-full px-3 py-2 text-left text-xs first:rounded-t last:rounded-b transition-colors ${
+                    className={`w-full px-3 py-2 text-left text-xs first:rounded-t bg-black border-white/10 last:rounded-b transition-colors ${
                       option === limit
-                        ? "bg-blue-50 text-blue-600 font-medium"
+                        ? "bg-blue-50/20 text-blue-600 font-medium"
                         : ""
                     }`}
                   >
@@ -162,7 +162,7 @@ const Pagination = ({
       </div>
 
       {/* Navigation controls */}
-      <div className="flex items-center gap-1 py-[3px] px-[20px] rounded-[6px]">
+      <div className="flex items-center gap-1 py-[3px] rounded-[6px]">
         {/* First page */}
         <motion.button
           whileTap={{ scale: 0.95 }}
@@ -210,7 +210,7 @@ const Pagination = ({
             className={`px-3 py-1 rounded transition-colors duration-200 min-w-[32px] ${
               currentPage === pageNum
                 ? "bg-primary shadow-sm"
-                : "hover:bg-white/70"
+                : "hover:bg-white/10"
             }`}
           >
             <BodyOne className="font-[600]">{pageNum}</BodyOne>
