@@ -4,7 +4,6 @@ import { ReusableTableProps } from "../ReuseableTable";
 type UseTableTabsProps = {
   userColumns: ReusableTableProps["columns"];
   data: ReusableTableProps["data"];
-  actions: ReusableTableProps["actions"];
   idKey: string;
   tableKey: string;
   paginationProps: ReusableTableProps["paginationProps"];
@@ -17,12 +16,11 @@ type UseTableTabsProps = {
 };
 
 export type CurrentTab = Omit<ReusableTableProps, "altTabs"> &
-  Required<Pick<ReusableTableProps, "idKey" | "tableKey" | "actions">>;
+  Required<Pick<ReusableTableProps, "idKey" | "tableKey">>;
 
 export const useTableTabs = ({
   userColumns,
   data,
-  actions = [],
   idKey,
   tableKey,
   paginationProps,
@@ -38,7 +36,6 @@ export const useTableTabs = ({
       {
         columns: userColumns,
         data,
-        actions,
         idKey,
         tableKey,
         paginationProps,
@@ -52,7 +49,6 @@ export const useTableTabs = ({
     [
       userColumns,
       data,
-      actions,
       idKey,
       tableKey,
       paginationProps,
@@ -68,7 +64,6 @@ export const useTableTabs = ({
     const tab = allTabs[activeTab];
     return {
       ...tab,
-      actions: tab.actions || [],
       idKey: tab.idKey || "id",
       tableKey: tab.tableKey || `default-table_${activeTab}`,
     };

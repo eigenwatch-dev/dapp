@@ -7,7 +7,6 @@ import {
   DetailedAllocationParams,
   Allocation,
 } from "@/types/allocation.types";
-import { PaginatedResponse } from "@/types/api.types";
 import {
   AllocationHistoryParams,
   AllocationHistoryData,
@@ -28,7 +27,7 @@ export const getDetailedAllocations = async (
   const queryString = params
     ? `?${new URLSearchParams(params as any).toString()}`
     : "";
-  return handleApiAction<PaginatedResponse<Allocation>>({
+  return handleApiAction<Allocation[]>({
     endpoint: `/api/v1/operators/${id}/allocations/detailed${queryString}`,
     method: "get",
   });

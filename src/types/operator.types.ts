@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { Strategy } from "./strategy.types";
+
 // ==================== OPERATOR TYPES ====================
 
 export type OperatorStatus = "active" | "inactive" | "all";
@@ -51,20 +53,47 @@ export interface Operator {
   metadata: OperatorMetadata | null;
 }
 
-export interface OperatorStats {
-  totalTVS: number;
-  delegatorCount: number;
-  avsCount: number;
-  operatorSetCount: number;
-  commission: {
-    pi: number;
-    avs: number;
-    operatorSet: number;
+export interface OperatorDetail {
+  operator_id: string;
+  operator_address: string;
+  metadata: OperatorMetadata | null;
+  status: {
+    is_active: boolean;
+    is_permissioned: boolean;
+    registered_at: string;
+    first_activity_at: string;
+    operational_days: number;
+    last_activity_at: string;
   };
-  utilization: {
+  delegation_config: {
+    current_delegation_approver: string;
+    delegation_approver_updated_at: string;
+  };
+  performance_summary: {
+    total_slash_events: number;
+    last_slashed_at: string | null;
+    force_undelegation_count: number;
+  };
+}
+
+export interface OperatorStats {
+  tvs: {
     total: number;
-    encumbered: number;
-    available: number;
+    by_strategy: Strategy[];
+  };
+  delegation: {
+    total_delegators: number;
+    active_delegators: number;
+    total_shares: string;
+  };
+  avs_participation: {
+    active_avs_count: number;
+    registered_avs_count: number;
+    active_operator_set_count: number;
+  };
+  commission: {
+    pi_split_bips: number;
+    pi_split_activated_at: string;
   };
 }
 

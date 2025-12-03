@@ -1,6 +1,6 @@
 // ==================== lib/utils.ts ====================
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AppApiResponse } from "@/types/api.types";
+import { ApiResponse, AppApiResponse } from "@/types/api.types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -11,7 +11,7 @@ export function cn(...inputs: ClassValue[]) {
 export function handleError<T = any>(
   error: any,
   isErrResponse?: boolean
-): AppApiResponse<T> {
+): AppApiResponse<ApiResponse<T>> {
   const safeResponse = error?.response
     ? {
         status: error.response.status,
@@ -49,7 +49,7 @@ export function handleError<T = any>(
 export function handleSuccess<T = any>(
   data: any,
   message?: string
-): AppApiResponse<T> {
+): AppApiResponse<ApiResponse<T>> {
   return {
     success: true,
     data: data,

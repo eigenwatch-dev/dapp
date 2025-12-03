@@ -22,6 +22,7 @@ export const useOperatorAVS = (
     queryKey: QUERY_KEYS.operatorAVS(id, params),
     queryFn: () => getOperatorAVS(id, params),
     enabled: enabled && !!id,
+    select: (data) => data.data?.data,
   });
 };
 

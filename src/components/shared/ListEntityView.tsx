@@ -21,6 +21,7 @@ export function ListEntityView({
     columns: TableColumnConfig[];
     data: Record<string, any>[];
     paginationProps?: PaginationProps;
+    onRowClick?: (row: any) => void;
   };
 }) {
   return (
@@ -49,6 +50,7 @@ export function ListEntityView({
           data={tableConfig.data}
           tableFilters={{ title: entity }}
           paginationProps={tableConfig.paginationProps}
+          onRowClick={tableConfig.onRowClick}
         />
       </div>
     </div>

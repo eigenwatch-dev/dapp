@@ -1,20 +1,28 @@
 // ==================== RISK & ANALYTICS TYPES ====================
 
 export interface RiskAssessment {
-  overallScore: number;
-  components: {
-    concentrationRisk: number;
-    volatilityRisk: number;
-    slashingHistory: number;
-    operationalStability: number;
+  assessment_date: string;
+  risk_score: string;
+  risk_level: string;
+  confidence_score: string;
+  component_scores: {
+    performance_score: string;
+    economic_score: string;
+    network_position_score: string;
   };
-  metrics: {
-    delegationHHI: number;
-    tvsVolatility30d: number;
-    slashingCount: number;
-    uptimePercentage: number;
+  key_metrics: {
+    delegation_hhi: string;
+    delegation_volatility_30d: string;
+    growth_rate_30d: string;
+    size_percentile: string;
+    slashing_event_count: number;
+    operational_days: number;
   };
-  assessmentDate: string;
+  flags: {
+    is_active: boolean;
+    has_been_slashed: boolean;
+    has_sufficient_data: boolean;
+  };
 }
 
 export type ConcentrationType =

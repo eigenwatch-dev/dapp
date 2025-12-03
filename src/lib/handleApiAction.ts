@@ -4,7 +4,7 @@
 
 import api from "@/lib/api";
 import { handleSuccess, handleError } from "@/lib/utils";
-import { AppApiResponse } from "@/types/api.types";
+import { ApiResponse, AppApiResponse } from "@/types/api.types";
 
 interface ApiActionOptions {
   endpoint: string;
@@ -18,7 +18,7 @@ export async function handleApiAction<T = any>({
   method = "post",
   body,
   successMessage,
-}: ApiActionOptions): Promise<AppApiResponse<T>> {
+}: ApiActionOptions): Promise<AppApiResponse<ApiResponse<T>>> {
   try {
     const response =
       method === "get"

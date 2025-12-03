@@ -2,7 +2,6 @@
 "use server";
 
 import { handleApiAction } from "@/lib/handleApiAction";
-import { PaginatedResponse } from "@/types/api.types";
 import {
   DelegatorSharesHistoryParams,
   DelegatorSharesHistory,
@@ -24,7 +23,7 @@ export const getOperatorDelegators = async (
   const queryString = params
     ? `?${new URLSearchParams(params as any).toString()}`
     : "";
-  return handleApiAction<PaginatedResponse<Delegator>>({
+  return handleApiAction<Delegator[]>({
     endpoint: `/api/v1/operators/${id}/delegators${queryString}`,
     method: "get",
   });

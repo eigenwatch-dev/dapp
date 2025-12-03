@@ -2,7 +2,6 @@
 "use server";
 
 import { handleApiAction } from "@/lib/handleApiAction";
-import { PaginatedResponse } from "@/types/api.types";
 import {
   DailySnapshotsParams,
   DailySnapshot,
@@ -17,6 +16,7 @@ import {
   CompareOperatorsResponse,
   OperatorRankings,
   NetworkComparison,
+  OperatorDetail,
 } from "@/types/operator.types";
 import { SlashingIncidents } from "@/types/slash.types";
 
@@ -26,14 +26,14 @@ export const getOperators = async (params?: OperatorListParams) => {
   const queryString = params
     ? `?${new URLSearchParams(params as any).toString()}`
     : "";
-  return handleApiAction<PaginatedResponse<Operator>>({
+  return handleApiAction<Operator[]>({
     endpoint: `/api/v1/operators${queryString}`,
     method: "get",
   });
 };
 
 export const getOperator = async (id: string) =>
-  handleApiAction<Operator>({
+  handleApiAction<OperatorDetail>({
     endpoint: `/api/v1/operators/${id}`,
     method: "get",
   });
@@ -51,7 +51,7 @@ export const getOperatorActivity = async (
   const queryString = params
     ? `?${new URLSearchParams(params as any).toString()}`
     : "";
-  return handleApiAction<PaginatedResponse<Activity>>({
+  return handleApiAction<Activity[]>({
     endpoint: `/api/v1/operators/${id}/activity${queryString}`,
     method: "get",
   });

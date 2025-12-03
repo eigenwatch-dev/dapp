@@ -9,13 +9,9 @@ import {
 } from "@tanstack/react-table";
 import { motion, AnimatePresence } from "framer-motion";
 import ClipLoader from "react-spinners/ClipLoader";
-import { ThreeDotsIcon } from "./components/ThreeDotsIcon";
-import { ActionsDropdown } from "./components/ActionsDropdown";
 import { useTableTabs } from "./hooks/useTableTabs";
-import { useTableActions } from "./hooks/useTableActions";
 import Pagination, { PaginationProps } from "./components/Pagination";
 import TableFilters, { TableFiltersProps } from "./components/TableFilters";
-import { getDropdownPosition } from "./utils/tableUtils";
 import { Checkbox } from "@/components/ui/checkbox";
 import useSelectionStore from "@/hooks/store/useSelect";
 import { useBreakpoint } from "@/hooks/ui/useBreakpoints";
@@ -23,16 +19,7 @@ import { useMobileCardData } from "./components/useMobileCardData";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import BodySix from "@/components/typography/BodySix";
-
-export type TableAction = {
-  label: string;
-  handler: (config: {
-    openDrawer: () => void;
-    data?: Record<string, any>;
-  }) => void;
-  className?: string;
-  icon?: React.ReactNode;
-};
+import { ChevronRight } from "lucide-react";
 
 export interface TableColumnConfig {
   key: string;
@@ -43,7 +30,6 @@ export type ReusableTableProps = {
   columns: TableColumnConfig[];
   data: Record<string, any>[];
   tableFilters: TableFiltersProps;
-  actions?: TableAction[];
   idKey?: string;
   tableKey?: string;
   paginationProps?: PaginationProps;
@@ -56,7 +42,6 @@ export type ReusableTableProps = {
 const ReusableTable = ({
   columns: userColumns,
   data,
-  actions = [],
   idKey = "id",
   tableKey = "default-table",
   paginationProps,
@@ -67,17 +52,11 @@ const ReusableTable = ({
   rawData,
 }: ReusableTableProps) => {
   const [activeTab, setActiveTab] = useState(0);
-  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
-  const [dropdownPosition, setDropdownPosition] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
 
   const { isMaxMd } = useBreakpoint();
   const { currentTab, allTabs } = useTableTabs({
     userColumns,
     data,
-    actions,
     idKey,
     tableKey,
     paginationProps,
@@ -87,12 +66,6 @@ const ReusableTable = ({
     rawData,
     altTabs,
     activeTab,
-  });
-
-  const { handleRowClick } = useTableActions({
-    currentTab,
-    onRowClick,
-    setDropdownPosition,
   });
 
   const { toggleSelection, isSelected, selectAll, deselectAll } =
@@ -107,16 +80,13 @@ const ReusableTable = ({
     isSelected(currentTab.tableKey, id)
   );
 
-  const hasMultipleActions =
-    currentTab.actions && currentTab.actions.length > 1;
+  const handleRowClick = (row: any) => {
+    if (onRowClick) {
+      onRowClick(row);
+    }
+  };
 
   const columns = useMemo(() => {
-    const hasActions = currentTab.actions && currentTab.actions.length > 0;
-    const shouldUseRowClickForActions = hasActions;
-
-    // Prepare actions with View Details if needed
-    const actionsToUse = [...(currentTab.actions || [])];
-
     const handleHeaderToggle = () => {
       if (allSelected) {
         deselectAll(currentTab.tableKey, visibleIds);
@@ -126,7 +96,7 @@ const ReusableTable = ({
     };
 
     const formattedColumns = [
-      // Selection/S/N column
+      // Selection column
       ...(currentTab.enableMultiSelect
         ? [
             {
@@ -142,9 +112,10 @@ const ReusableTable = ({
                 return (
                   <Checkbox
                     checked={isSelected(currentTab.tableKey, id)}
-                    onCheckedChange={() =>
-                      toggleSelection(currentTab.tableKey, id)
-                    }
+                    onCheckedChange={() => {
+                      toggleSelection(currentTab.tableKey, id);
+                    }}
+                    onClick={(e) => e.stopPropagation()}
                   />
                 );
               },
@@ -161,51 +132,8 @@ const ReusableTable = ({
       })),
     ];
 
-    // Add actions column if actions are provided
-    if (actionsToUse.length > 0) {
-      formattedColumns.push({
-        id: "actions",
-        header: () => <span></span>,
-        cell: ({ row }: { row: { original: Record<string, any> } }) => {
-          console.log({ row });
-
-          const rowId = row.original[currentTab.idKey];
-          const isDropdownOpen = openDropdownId === rowId;
-
-          return (
-            <div className="relative flex justify-end">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setOpenDropdownId(isDropdownOpen ? null : rowId);
-                  setDropdownPosition(getDropdownPosition(e));
-                }}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors rotate-90"
-                aria-label="More actions"
-              >
-                <ThreeDotsIcon />
-              </button>
-
-              <ActionsDropdown
-                actions={actionsToUse}
-                row={row.original}
-                isOpen={isDropdownOpen}
-                onClose={() => {
-                  setOpenDropdownId(null);
-                  setDropdownPosition(null);
-                }}
-                position={shouldUseRowClickForActions ? dropdownPosition : null}
-              />
-            </div>
-          );
-        },
-        enableSorting: false,
-      });
-    }
-
     return formattedColumns;
   }, [
-    currentTab.actions,
     currentTab.enableMultiSelect,
     currentTab.columns,
     currentTab.tableKey,
@@ -216,8 +144,6 @@ const ReusableTable = ({
     selectAll,
     isSelected,
     toggleSelection,
-    openDropdownId,
-    dropdownPosition,
   ]);
 
   const table = useReactTable({
@@ -247,41 +173,13 @@ const ReusableTable = ({
           {/* Mobile Table */}
           <div className="flex flex-col gap-[24px]">
             {mobileCards.map((mobileCard, index) => {
-              const rowId = mobileCard.raw[currentTab.idKey];
-              const isDropdownOpen = openDropdownId === rowId;
-
               return (
                 <div key={index} className="flex flex-col gap-[24px]">
-                  {/* Actions button */}
-                  {currentTab.actions?.length > 0 && (
-                    <div className=" flex justify-end">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenDropdownId(isDropdownOpen ? null : rowId);
-                          setDropdownPosition(getDropdownPosition(e));
-                        }}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors rotate-90"
-                      >
-                        <ThreeDotsIcon />
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Actions dropdown */}
-                  <ActionsDropdown
-                    actions={currentTab.actions}
-                    row={mobileCard.raw}
-                    isOpen={isDropdownOpen}
-                    onClose={() => {
-                      setOpenDropdownId(null);
-                      setDropdownPosition(null);
-                    }}
-                    position={dropdownPosition}
-                  />
-
                   {/* mobile card */}
-                  <div className="flex flex-col gap-[13px] relative">
+                  <div
+                    className="flex flex-col gap-[13px] relative cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors"
+                    onClick={() => handleRowClick(mobileCard.raw)}
+                  >
                     {/* Row fields */}
                     {mobileCard.fields.map((field, idx) => (
                       <div className="flex w-full justify-between" key={idx}>
@@ -341,6 +239,7 @@ const ReusableTable = ({
                         </span>
                       </th>
                     ))}
+                    {currentTab.onRowClick ? <div></div> : <></>}
                   </tr>
                 ))}
               </thead>
@@ -365,10 +264,8 @@ const ReusableTable = ({
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className={`border-t-[1.33px] border-[#27272A4D] hover:bg-[#27272A]/5 ${
-                          !hasMultipleActions ? "cursor-pointer" : ""
-                        }`}
-                        onClick={(e) => handleRowClick(e, row.original)}
+                        className="border-t-[1.33px] border-[#27272A4D] hover:bg-[#27272A]/5 cursor-pointer"
+                        onClick={() => handleRowClick(row.original)}
                       >
                         {row.getVisibleCells().map((cell) => (
                           <td
@@ -383,6 +280,19 @@ const ReusableTable = ({
                             </div>
                           </td>
                         ))}
+                        {currentTab.onRowClick ? (
+                          <td className="h-[65px] py-[16px] whitespace-nowrap">
+                            <div className="flex h-full my-auto">
+                              <ChevronRight
+                                color="#52525C"
+                                size={20}
+                                className="my-auto"
+                              />
+                            </div>
+                          </td>
+                        ) : (
+                          <></>
+                        )}
                       </motion.tr>
                     ))
                   )}

@@ -35,7 +35,7 @@ export const useOperator = (id: string, enabled = true) => {
     queryKey: QUERY_KEYS.operator(id),
     queryFn: () => getOperator(id),
     enabled: enabled && !!id,
-    select: (data) => data.data,
+    select: (data) => data.data?.data,
   });
 };
 
@@ -44,6 +44,7 @@ export const useOperatorStats = (id: string, enabled = true) => {
     queryKey: QUERY_KEYS.operatorStats(id),
     queryFn: () => getOperatorStats(id),
     enabled: enabled && !!id,
+    select: (data) => data.data?.data,
   });
 };
 
@@ -70,6 +71,7 @@ export const useDailySnapshots = (
     queryKey: QUERY_KEYS.operatorSnapshots(id, params),
     queryFn: () => getDailySnapshots(id, params),
     enabled: enabled && !!id && !!params.date_from && !!params.date_to,
+    select: (data) => data.data?.data,
   });
 };
 

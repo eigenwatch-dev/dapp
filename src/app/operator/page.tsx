@@ -4,8 +4,10 @@ import { ListEntityView } from "@/components/shared/ListEntityView";
 import { TableColumnConfig } from "@/components/shared/table/ReuseableTable";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useOperators } from "@/hooks/crud/useOperator";
+import { useRouter } from "next/navigation";
 
 export default function OperatorPage() {
+  const router = useRouter();
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(20);
 
@@ -15,7 +17,7 @@ export default function OperatorPage() {
   });
 
   const operatorData = data?.data || [];
-  const total = data?.total || 0;
+  const total = data?.pagination?.total || 0;
 
   const operatorsColumns: TableColumnConfig[] = [
     { key: "operator", displayName: "Operator" },
@@ -76,6 +78,9 @@ export default function OperatorPage() {
             </div>
           ),
         })),
+        onRowClick: (row) => {
+          router.push(`/operator/${row.operator_id}`);
+        },
         paginationProps: {
           pagination: {
             total,

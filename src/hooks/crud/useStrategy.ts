@@ -21,6 +21,7 @@ export const useOperatorStrategies = (
     queryKey: QUERY_KEYS.operatorStrategies(id, params),
     queryFn: () => getOperatorStrategies(id, params),
     enabled: enabled && !!id,
+    select: (data) => data.data?.data,
   });
 };
 

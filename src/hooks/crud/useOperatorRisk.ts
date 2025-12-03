@@ -20,6 +20,7 @@ export const useRiskAssessment = (
     queryKey: QUERY_KEYS.operatorRisk(id, date),
     queryFn: () => getRiskAssessment(id, date),
     enabled: enabled && !!id,
+    select: (data) => data.data?.data,
   });
 };
 
